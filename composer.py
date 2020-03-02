@@ -84,6 +84,8 @@ magic2=[ [1,0],[2,5],[3,6],[4,1],[5,1],[6,2] ]
 major_scale = [0,2,4,5,7,9,11,12]
 minor_scale = [0,2,3,5,7,8,10,12]
 minor_diminished_scale = [0,2,3,5,7,8,9,12]
+romanian_scale = [0,2,3,6,7,9,10,12]
+phrygian_scale = [0,1,3,5,7,8,10,12]
 
 major_chord = [0,4,7]
 minor_chord = [0,3,7]
@@ -144,8 +146,8 @@ def brag_magic():
 #print(major_scale("Do",4))
 #print(minor_scale1("Do",4))
 
-#print_progression("Do",4,minor_scale)
-#print_progression("Fa",4,major_chord)
+print_progression("Do",4,romanian_scale)
+print_progression("Do",4,phrygian_scale)
 
-brag_progression()
-brag_magic()
+#brag_progression()
+#brag_magic()
