@@ -22,121 +22,117 @@
 #  
 #  
 
-#TODO:
-# parametrizează octava. Fă un array Do[3,4,5]. Sau o funcție. Trebuie să returneze și midi value. poate fi adăugat doar un câmp la notes pentru easy fix
-# diferențele între octave se pot face cu -12 sau +12. Înmulțit cu un factor, în funcție de câte octave în plus sau în minus se merge
 
-
-# notation_type: 1=american(C4), 2=italian(Do4)
-notation_type = 2
+# notation_type: 2=american(C4), 3=italian(Do4)
+notation_type = 3
 
 # first value is the midi note value. Use https://pypi.org/project/MIDIUtil/ for midi integration
 notes = [
-[48,"C-3","Do-3"],
-[49,"C#-3","Do#-3"],
-[50,"D-3","Re-3"],
-[51,"D#-3","Re#-3"],
-[52,"E-3","Mi-3"],
-[53,"F-3","Fa-3"],
-[54,"F#-3","Fa#-3"],
-[55,"G-3","Sol-3"],
-[56,"G#-3","Sol#-3"],
-[57,"A-3","La-3"],
-[58,"A#-3","La#-3"],
-[59,"B-3","Si-3"],
+[48,3,"C","Do"],
+[49,3,"C#","Do#"],
+[50,3,"D","Re"],
+[51,3,"D#","Re#"],
+[52,3,"E","Mi"],
+[53,3,"F","Fa"],
+[54,3,"F#","Fa#"],
+[55,3,"G","Sol"],
+[56,3,"G#","Sol#"],
+[57,3,"A","La"],
+[58,3,"A#","La#"],
+[59,3,"B","Si"],
 
-[60,"C-4","Do-4"],
-[61,"C#-4","Do#-4"],
-[62,"D-4","Re-4"],
-[63,"D#-4","Re#-4"],
-[64,"E-4","Mi-4"],
-[65,"F-4","Fa-4"],
-[66,"F#-4","Fa#-4"],
-[67,"G-4","Sol-4"],
-[68,"G#-4","Sol#-4"],
-[69,"A-4","La-4"],
-[70,"A#-4","La#-4"],
-[71,"B-4","Si-4"],
+[60,4,"C","Do"],
+[61,4,"C#","Do#"],
+[62,4,"D","Re"],
+[63,4,"D#","Re#"],
+[64,4,"E","Mi"],
+[65,4,"F","Fa"],
+[66,4,"F#","Fa#"],
+[67,4,"G","Sol"],
+[68,4,"G#","Sol#"],
+[69,4,"A","La"],
+[70,4,"A#","La#"],
+[71,4,"B","Si"],
 
-[72,"C-5","Do-5"],
-[73,"C#-5","Do#-5"],
-[74,"D-5","Re-5"],
-[75,"D#-5","Re#-5"],
-[76,"E-5","Mi-5"],
-[77,"F-5","Fa-5"],
-[78,"F#-5","Fa#-5"],
-[79,"G-5","Sol-5"],
-[80,"G#-5","Sol#-5"],
-[81,"A-5","La-5"],
-[82,"A#-5","La#-5"],
-[83,"B-5","Si-5"],
+[72,5,"C","Do"],
+[73,5,"C#","Do#"],
+[74,5,"D","Re"],
+[75,5,"D#","Re#"],
+[76,5,"E","Mi"],
+[77,5,"F","Fa"],
+[78,5,"F#","Fa#"],
+[79,5,"G","Sol"],
+[80,5,"G#","Sol#"],
+[81,5,"A","La"],
+[82,5,"A#","La#"],
+[83,5,"B","Si"],
 ]
 
-# folosește-te aici de octava parametrizată, dacă poți
 #fifths = ["C-4", "G-4", "D-4", "A-4", "E-4", "B-4", "F#-4", "C#-4", "G#-4", "D#-4", "A#-4", "F-4"]
 
-chromatic = ["Do-4","Do#-4","Re-4", "Re#-4", "Mi-4", "Fa-4", "Fa#-4", "Sol-4", "Sol#-4", "La-4", "La#-4", "Si-4"]
+chromatic = ["Do","Do#","Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si"]
 
 magic_list=["Do-major","Re-minor","Mi-minor", "Fa-major", "Sol-major", "La-minor", "Si-dimiinshed"]
 
 magic1=[ [1,0],[2,5],[3,6],[4,5],[5,1],[6,2] ]
 magic2=[ [1,0],[2,5],[3,6],[4,1],[5,1],[6,2] ]
 
-def find_note_index(note):
+
+def find_note_index(note,octave):
 	for i in range(len(notes)):
-		if(note==notes[i][notation_type]):
+		if(note==notes[i][notation_type] and octave==notes[i][1]):
 		   return i
 	return False
 
 
-def major_chord(note):
+def major_chord(note,octave):
 	return(
-	notes[find_note_index(note)][notation_type] + " " + 
-	notes[find_note_index(note)+4][notation_type] + " " + 
-	notes[find_note_index(note)+7][notation_type]
+	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+4][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave)
 	)
 
-def minor_chord(note):
+def minor_chord(note,octave):
 	return(
-	notes[find_note_index(note)][notation_type] + " " + 
-	notes[find_note_index(note)+3][notation_type] + " " + 
-	notes[find_note_index(note)+7][notation_type]
+	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+3][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave)
 	)
 
-def major_scale(note):
+def major_scale(note,octave):
 	return(
-	notes[find_note_index(note)][notation_type] + " " + 
-	notes[find_note_index(note)+2][notation_type] + " " + 
-	notes[find_note_index(note)+4][notation_type] + " " + 
-	notes[find_note_index(note)+5][notation_type] + " " + 
-	notes[find_note_index(note)+7][notation_type] + " " + 
-	notes[find_note_index(note)+9][notation_type] + " " + 
-	notes[find_note_index(note)+11][notation_type] + " " +
-	notes[find_note_index(note)+12][notation_type]
+	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+2][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+4][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+5][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+9][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+11][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+12][notation_type] + "-" + str(octave)
 	)
 
-def minor_scale(note):
+def minor_scale(note,octave):
 	return(
-	notes[find_note_index(note)][notation_type] + " " + 
-	notes[find_note_index(note)+2][notation_type] + " " + 
-	notes[find_note_index(note)+3][notation_type] + " " + 
-	notes[find_note_index(note)+5][notation_type] + " " + 
-	notes[find_note_index(note)+7][notation_type] + " " + 
-	notes[find_note_index(note)+8][notation_type] + " " + 
-	notes[find_note_index(note)+10][notation_type] + " " +
-	notes[find_note_index(note)+12][notation_type]
+	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+2][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+3][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+5][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+8][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+10][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+12][notation_type] + "-" + str(octave)
 	)
 
-def minor_diminished_scale(note):
+def minor_diminished_scale(note,octave):
 	return (
-	notes[find_note_index(note)][notation_type] + " " + 
-	notes[find_note_index(note)+2][notation_type] + " " + 
-	notes[find_note_index(note)+3][notation_type] + " " + 
-	notes[find_note_index(note)+5][notation_type] + " " + 
-	notes[find_note_index(note)+7][notation_type] + " " + 
-	notes[find_note_index(note)+8][notation_type] + " " + 
-	notes[find_note_index(note)+9][notation_type] + " " +
-	notes[find_note_index(note)+12][notation_type]
+	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+2][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+3][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+5][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+8][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+9][notation_type] + "-" + str(octave) + " " +
+	notes[find_note_index(note,octave)+12][notation_type] + "-" + str(octave)
 	)
 
 
@@ -155,11 +151,11 @@ def parse_magic1(pos):
 
 def brag_notes():
 	for nota in chromatic:
-		print(nota + " Gamă majoră " + ": " + major_scale(nota))
-		print(nota + " Gamă minoră " + ": " + minor_scale(nota))
-		print(nota + " Gamă minoră diminished " + ": " + minor_diminished_scale(nota))
-		print(nota + " Acord major " ": " + major_chord(nota))
-		print(nota + " Acord minor " + ": " + minor_chord(nota))
+		print(nota + " Gamă majoră " + ": " + major_scale(nota,4))
+		print(nota + " Gamă minoră " + ": " + minor_scale(nota,4))
+		print(nota + " Gamă minoră diminished " + ": " + minor_diminished_scale(nota,4))
+		print(nota + " Acord major " ": " + major_chord(nota,4))
+		print(nota + " Acord minor " + ": " + minor_chord(nota,4))
 		print()
 
 
@@ -172,3 +168,5 @@ def brag_progression():
 
 brag_progression()
 brag_notes()
+#print(major_scale("Do",4))
+#print(minor_scale("Do",4))
