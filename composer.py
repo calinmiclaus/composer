@@ -23,10 +23,8 @@
 #  
 
 
-# notation_type: 2=american(C4), 3=italian(Do4)
-notation_type = 3
-
-# first value is the midi note value. Use https://pypi.org/project/MIDIUtil/ for midi integration
+# Format of the array: midi_note_value, octave, name1, name2
+# Use https://pypi.org/project/MIDIUtil/ for midi integration
 notes = [
 [48,3,"C","Do"],
 [49,3,"C#","Do#"],
@@ -68,76 +66,55 @@ notes = [
 [83,5,"B","Si"],
 ]
 
-#fifths = ["C-4", "G-4", "D-4", "A-4", "E-4", "B-4", "F#-4", "C#-4", "G#-4", "D#-4", "A#-4", "F-4"]
 
+# What format should we use for output.
+# 2=american(C), 3=italian(Do)
+notation_type = 3
+
+#fifths = ["C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F"]
+
+# all the notes
 chromatic = ["Do","Do#","Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si"]
 
-magic_list=["Do-major","Re-minor","Mi-minor", "Fa-major", "Sol-major", "La-minor", "Si-dimiinshed"]
-
+magic_list=["Do-major","Re-minor","Mi-minor", "Fa-major", "Sol-major", "La-minor", "Si-diminished"]
 magic1=[ [1,0],[2,5],[3,6],[4,5],[5,1],[6,2] ]
 magic2=[ [1,0],[2,5],[3,6],[4,1],[5,1],[6,2] ]
 
+# chords and scales progressions. Each unit is a semitone, 0 being the root note
+major_scale = [0,2,4,5,7,9,11,12]
+minor_scale = [0,2,3,5,7,8,10,12]
+minor_diminished_scale = [0,2,3,5,7,8,9,12]
 
-def find_note_index(note,octave):
+major_chord = [0,4,7]
+minor_chord = [0,3,7]
+
+# should we print the octave beside each note ? 0=false, 1=true
+print_octave = 0
+
+# returns the index of note in the array, looking for it by name (any notation) and octave
+def note_index(note,octave):
 	for i in range(len(notes)):
-		if(note==notes[i][notation_type] and octave==notes[i][1]):
+		# check for both notation types (2,3) so we can specify any notation for the note argument
+		if( note == notes[i][2] or note == notes[i][3] and octave == notes[i][1]):
 		   return i
+
 	return False
 
-
-def major_chord(note,octave):
-	return(
-	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+4][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave)
-	)
-
-def minor_chord(note,octave):
-	return(
-	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+3][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave)
-	)
-
-def major_scale(note,octave):
-	return(
-	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+2][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+4][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+5][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+9][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+11][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+12][notation_type] + "-" + str(octave)
-	)
-
-def minor_scale(note,octave):
-	return(
-	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+2][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+3][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+5][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+8][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+10][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+12][notation_type] + "-" + str(octave)
-	)
-
-def minor_diminished_scale(note,octave):
-	return (
-	notes[find_note_index(note,octave)][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+2][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+3][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+5][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+7][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+8][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+9][notation_type] + "-" + str(octave) + " " +
-	notes[find_note_index(note,octave)+12][notation_type] + "-" + str(octave)
-	)
-
-
-def parse_magic1(pos):
+# prints out a progression starting from a note and an octave
+def print_progression(note, octave, progression):
+	# used for octave output (is it supressed or not?)
+	octavestr = ""
 	
+	for delta in progression:
+		if(print_octave==1):
+			octavestr = "-" + str(octave)
+		print(notes[note_index(note,octave)+delta][notation_type] + octavestr + " ", end = '')
+	
+	print()
+
+
+# prints out "magic" cyclic chords
+def parse_magic(pos):
 	# print the first chord, C
 	print(magic_list[0])
 
@@ -149,24 +126,26 @@ def parse_magic1(pos):
 		print(magic_list[magic1[pos-1][1]-1])
 		pos=magic1[pos-1][1]
 
-def brag_notes():
-	for nota in chromatic:
-		print(nota + " Gamă majoră " + ": " + major_scale(nota,4))
-		print(nota + " Gamă minoră " + ": " + minor_scale(nota,4))
-		print(nota + " Gamă minoră diminished " + ": " + minor_diminished_scale(nota,4))
-		print(nota + " Acord major " ": " + major_chord(nota,4))
-		print(nota + " Acord minor " + ": " + minor_chord(nota,4))
+# prints chords and scales for all notes in chromatic
+def brag_progression():
+	for note in chromatic:
+		for progression in [major_chord, minor_chord, major_scale, minor_scale, minor_diminished_scale]:
+			print_progression(note,4,progression)
 		print()
 
 
-def brag_progression():
+def brag_magic():
 	for progression in range(1,6):
 		print("Progression in "+str(progression+1))
-		parse_magic1(progression+1)
+		parse_magic(progression+1)
 		print()
 
 
-brag_progression()
-brag_notes()
 #print(major_scale("Do",4))
-#print(minor_scale("Do",4))
+#print(minor_scale1("Do",4))
+
+#print_progression("Do",4,minor_scale)
+#print_progression("Fa",4,major_chord)
+
+brag_progression()
+brag_magic()
